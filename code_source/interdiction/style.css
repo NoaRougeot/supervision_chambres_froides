@@ -1,0 +1,29 @@
+body 
+{
+    background: #0a0a0a;
+    color: #ff3333;
+    font-family: 'Courier New', monospace;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+        
+.intrusion-card 
+{
+    background: rgba(30, 0, 0, 0.95);
+    border: 3px solid #ff0000;
+    box-shadow: 0 0 60px rgba(255, 0, 0, 0.8);
+    animation: pulse 2s infinite;
+}
+        
+@keyframes pulse
+{
+    0% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.6); }
+    50% { box-shadow: 0 0 80px rgba(255, 0, 0, 1); }
+}
+
+.red-text
+{
+    text-shadow: 0 0 15px #ff0000;
+}
