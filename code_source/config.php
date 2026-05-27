@@ -36,8 +36,8 @@
     //Format d'un mot de passe respectant le format de l'ANSSI
     $pattern_cfg = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/';
 	
-	$serveur_cfg = "mysql-rougeot.alwaysdata.net";
-    $utilisateur_cfg  = "rougeot";
-    $mdp_cfg  = "NoNoDu8854450";
-    $bdd_cible_cfg  = "rougeot_projet_bts";
+	$serveur_cfg = "x";
+    $utilisateur_cfg  = "x";
+    $mdp_cfg  = "x";
+    $bdd_cible_cfg  = "x";
 ?>
