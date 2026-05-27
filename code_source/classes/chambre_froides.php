@@ -84,10 +84,10 @@
                 return "Connexion impossible à la base de données";
             }
 
-            $nom       = $_GET['nom_chambre']  ?? '';
-            $type      = $_GET['type_chambre'] ?? '';
-            $plage_min = $_GET['plage_min']    ?? '';
-            $plage_max = $_GET['plage_max']    ?? '';
+            $nom       = $_POST['nom_chambre']  ?? '';
+            $type      = $_POST['type_chambre'] ?? '';
+            $plage_min = $_POST['plage_min']    ?? '';
+            $plage_max = $_POST['plage_max']    ?? '';
 
             if (empty($nom) || $type === '' || $plage_min === '' || $plage_max === '') 
             {
@@ -114,11 +114,11 @@
 
         public function modifier_chambre(): string
         {
-            $id  = (int)($_GET['id_chambre'] ?? 0);
-            $nom = trim($_GET['nom_chambre'] ?? '');
-            $type = $_GET['type_chambre'] ?? '';
-            $min = $_GET['plage_min'] ?? '';
-            $max = $_GET['plage_max'] ?? '';
+            $id  = (int)($_POST['id_chambre'] ?? 0);
+            $nom = trim($_POST['nom_chambre'] ?? '');
+            $type = $_POST['type_chambre'] ?? '';
+            $min = $_POST['plage_min'] ?? '';
+            $max = $_POST['plage_max'] ?? '';
 
             if (!$id || $nom === '' || $type === '' || $min === '' || $max === '') 
             {
@@ -149,7 +149,7 @@
 
         public function supprimer_chambre(): string
         {
-            $id = (int)($_GET['id_chambre'] ?? 0);
+            $id = (int)($_POST['id_chambre'] ?? 0);
 
             if (!$id) 
             {

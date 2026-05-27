@@ -16,9 +16,9 @@
     $erreur  = '';
 
     // Traitement du formulaire
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['code']))
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['code']))
     {
-        $code = trim($_GET['code']);
+        $code = trim($_POST['code']);
 
         if ($double_authentification->valider_code_2fa($code)) 
         {
@@ -33,7 +33,7 @@
     }
 
     // Bouton régénérer QR
-    if (isset($_GET['regen'])) 
+    if (isset($_POST['regen'])) 
     {
         $double_authentification->regenerer_2fa();
     }
@@ -118,7 +118,7 @@
 
                             <hr class="my-4">
 
-                            <form method="GET">
+                            <form method="POST">
                                 <h5 class="text-success mb-3">
                                     <i class="fas fa-key me-2"></i> Entrez le code à 6 chiffres généré par votre application
                                 </h5>

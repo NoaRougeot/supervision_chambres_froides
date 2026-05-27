@@ -12,9 +12,9 @@ $double_authentification = new DoubleAuthentification();
 $erreur = '';
 
 // Traitement du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['code']))
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['code']))
 {
-    $code = trim($_GET['code']);
+    $code = trim($_POST['code']);
 
     // Récupère la clé PERMANENTE depuis la session
     $secret = $_SESSION['cle_secrete'] ?? null;
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['code']))
                             </div>
                         <?php endif; ?>
 
-                        <form method="GET" action="">
+                        <form method="POST" action="">
                             <div class="input-group input-group-lg mb-4 justify-content-center mx-auto" style="max-width: 320px;">
                                 <span class="input-group-text"><i class="fas fa-key"></i></span>
                                 <input type="text"
@@ -111,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['code']))
 
                         <div class="mt-4 small text-muted">
                             <p>Aplication perdu ? <a href="../authentification/deconnexion.php">Déconnexion</a></p>
-                            <!-- Optionnel : lien "contacter le support" ou "codes de secours" -->
                         </div>
                     </div>
 

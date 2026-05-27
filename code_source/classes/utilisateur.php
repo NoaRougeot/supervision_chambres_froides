@@ -6,19 +6,17 @@
     class Utilisateur
     {
         private $bdd;
-		private $bdd_requete = "SELECT * FROM Utilisateur WHERE pseudo = :login"; // si le login est contenu en base de données
+		private $bdd_requete = "SELECT * FROM Utilisateur WHERE pseudo = :login";
 		public $messages = '';
 
-        // Constructeur pour initialiser la BDD
         public function __construct()
         {
             $this->bdd = new Base_de_donnee();
-            $this->bdd->connexion(); // Établis la connexion une fois pour toutes
+            $this->bdd->connexion();
         }
 
         function connexion_utilisateur(string $login, string $mdp)
         {
-            // si on n'est pas connecté à la base de données
 			if ($this->bdd->est_connecter !== True)
 			{
 				$this->messages = "Connexion impossible a la base de donnée";
@@ -27,7 +25,7 @@
 
             else
             {
-			    $result = $this->bdd->fetch($this->bdd_requete, [':login' => $login]); //on crée un tableau associatif avec les infos associées à l'identifiant utilisateur en base de données
+			    $result = $this->bdd->fetch($this->bdd_requete, [':login' => $login]);
 
 			    if (!$result)
 			    {
@@ -37,7 +35,6 @@
 
 			    else
 			    {
-				    //on vérifie si le hash du mot de passe saisi est le même que celui déjà présent en base de données
 				    if (!password_verify($mdp, $result['hash_mdp']))
 				    {
 					    $this->messages = "Identifiant ou mot de passe incorrect";
@@ -46,11 +43,10 @@
 
 				    else
 				    {
-					    session_start(); // on crée une session PHP où on stockera chaque champ du tableau
+					    session_start();
 
 						$_SESSION["logged"] = True;
 						$_SESSION["2fa_validated"] = False;
-
 					    $_SESSION["pseudo"] = $result["pseudo"];
 					    $_SESSION["prenom"] = $result["prenom"];
 					    $_SESSION["nom"] = $result["nom"];
@@ -77,9 +73,8 @@
 
 		function deconnexion_utilisateur(bool $redirect = True)
 		{
-			$_SESSION=array(); // on stocke toutes les variables de session dans un tableau vide pour libérer l'espace mémoire
+			$_SESSION=array();
 
-			// Supprimer le cookie PHPSESSID s'il existe
     		if (ini_get("session.use_cookies"))
 			{
         		$params = session_get_cookie_params();
@@ -93,7 +88,7 @@
         		$params["httponly"]
         		);
 
-				session_destroy(); // on détruit la session
+				session_destroy();
 			}
 
 			$this->bdd->deconnexion();
@@ -112,12 +107,12 @@
         		return "Connexion impossible à la base de données";
     		}
 
-    		$pseudo    = $_GET['pseudo']    ?? '';
-    		$nom       = $_GET['nom']       ?? '';
-    		$prenom    = $_GET['prenom']    ?? '';
-    		$droits    = $_GET['droits']    ?? '';
-    		$email     = $_GET['email']     ?? '';
-    		$mdp       = $_GET['mdp']       ?? '';
+    		$pseudo = $_POST['pseudo'] ?? '';
+    		$nom    = $_POST['nom']    ?? '';
+    		$prenom = $_POST['prenom'] ?? '';
+    		$droits = $_POST['droits'] ?? '';
+    		$email  = $_POST['email']  ?? '';
+    		$mdp    = $_POST['mdp']    ?? '';
 
     		if (empty($pseudo) || empty($nom) || empty($prenom) || empty($email) || empty($mdp)) 
 			{
@@ -125,122 +120,86 @@
     		}
 
 			// Vérification doublon pseudo
-    		$check_pseudo = $this->bdd->pdo->prepare("SELECT id_utilisateur FROM Utilisateur WHERE pseudo = :pseudo");
-    		$check_pseudo->execute([':pseudo' => $pseudo]);
-
-    		if ($check_pseudo->fetch()) 
+    		if ($this->bdd->fetch("SELECT id_utilisateur FROM Utilisateur WHERE pseudo = :pseudo", [':pseudo' => $pseudo]))
 			{
         		return "Ce pseudo est déjà utilisé";
     		}
 
     		// Vérification doublon email
-    		$check_email = $this->bdd->pdo->prepare("SELECT id_utilisateur FROM Utilisateur WHERE email = :email");
-    		$check_email->execute([':email' => $email]);
-
-    		if ($check_email->fetch()) 
+    		if ($this->bdd->fetch("SELECT id_utilisateur FROM Utilisateur WHERE email = :email", [':email' => $email]))
 			{
         		return "Cet email est déjà associé à un compte";
     		}
 
-    		$hash = password_hash($mdp, PASSWORD_BCRYPT);
-    		$timestamp = time();
-
-    		$requete = "INSERT INTO Utilisateur (pseudo, nom, prenom, date_inscription, droits, hash_mdp, email, cle_secrete)
-                		VALUES (:pseudo, :nom, :prenom, :date_inscription, :droits, :hash_mdp, :email, '')";
-
-    		$stmt = $this->bdd->pdo->prepare($requete);
-    		$stmt->execute([
-        		':pseudo'           => $pseudo,
-        		':nom'              => $nom,
-        		':prenom'           => $prenom,
-        		':date_inscription' => $timestamp,
-        		':droits'           => $droits,
-        		':hash_mdp'         => $hash,
-        		':email'            => $email,
-    		]);
+    		$this->bdd->requetes_sql(
+				"INSERT INTO Utilisateur (pseudo, nom, prenom, date_inscription, droits, hash_mdp, email, cle_secrete)
+                VALUES (:pseudo, :nom, :prenom, :date_inscription, :droits, :hash_mdp, :email, '')",
+				[
+					':pseudo'           => $pseudo,
+					':nom'              => $nom,
+					':prenom'           => $prenom,
+					':date_inscription' => time(),
+					':droits'           => $droits,
+					':hash_mdp'         => password_hash($mdp, PASSWORD_BCRYPT),
+					':email'            => $email,
+				]
+			);
 
     		return "Utilisateur '$pseudo' ajouté avec succès";
 		}
 
 		function modifier_utilisateur(): string
 		{
-        	$id = (int)($_GET['id_utilisateur'] ?? 0);
-        	$pseudo = trim($_GET['pseudo'] ?? '');
-        	$nom = trim($_GET['nom'] ?? '');
-        	$prenom = trim($_GET['prenom'] ?? '');
-        	$email = trim($_GET['email'] ?? '');
-        	$droits = $_GET['droits'] ?? '';
+        	$id     = (int)($_POST['id_utilisateur'] ?? 0);
+        	$pseudo = trim($_POST['pseudo'] ?? '');
+        	$nom    = trim($_POST['nom']    ?? '');
+        	$prenom = trim($_POST['prenom'] ?? '');
+        	$email  = trim($_POST['email']  ?? '');
+        	$droits = $_POST['droits'] ?? '';
 
         	if (!$id || !$pseudo || !$nom || !$prenom || !$email) 
         	{
            		return "Tous les champs obligatoires doivent être remplis.";
         	} 
         
+        	// Vérification doublon pseudo
+        	if ($this->bdd->fetch("SELECT id_utilisateur FROM Utilisateur WHERE pseudo = :p AND id_utilisateur != :id", [':p' => $pseudo, ':id' => $id]))
+            {
+                return "Ce pseudo est déjà utilisé.";
+            }
+
+        	// Vérification doublon email
+        	if ($this->bdd->fetch("SELECT id_utilisateur FROM Utilisateur WHERE email = :e AND id_utilisateur != :id", [':e' => $email, ':id' => $id]))
+            {
+            	return "Cet email est déjà associé à un compte.";
+            }
+
+        	$mdp_raw = $_POST['mdp'] ?? '';
+
+        	if (!empty($mdp_raw)) 
+            {
+                $this->bdd->requetes_sql("UPDATE Utilisateur SET pseudo=:pseudo, nom=:nom, prenom=:prenom, email=:email, droits=:droits, hash_mdp=:hash WHERE id_utilisateur=:id", [':pseudo'=>$pseudo, ':nom'=>$nom, ':prenom'=>$prenom, ':email'=>$email, ':droits'=>$droits, ':hash'=>password_hash($mdp_raw, PASSWORD_BCRYPT), ':id'=>$id]);
+            } 
+        
         	else 
-        	{
-            	$chk = $bdd->pdo->prepare("SELECT id_utilisateur FROM Utilisateur WHERE pseudo=:p AND id_utilisateur!=:id");
-            	$chk->execute([':p'=>$pseudo,':id'=>$id]);
+            {
+                $this->bdd->requetes_sql("UPDATE Utilisateur SET pseudo=:pseudo, nom=:nom, prenom=:prenom, email=:email, droits=:droits WHERE id_utilisateur=:id", [':pseudo'=>$pseudo, ':nom'=>$nom, ':prenom'=>$prenom, ':email'=>$email, ':droits'=>$droits, ':id'=>$id]);
+            }
 
-            	if ($chk->fetch()) 
-            	{
-                	return "Ce pseudo est déjà utilisé.";
-            	} 
-            
-            	else 
-                {
-                    $chk2 = $bdd->pdo->prepare("SELECT id_utilisateur FROM Utilisateur WHERE email=:e AND id_utilisateur!=:id");
-                    $chk2->execute([':e'=>$email,':id'=>$id]);
-
-                    if ($chk2->fetch()) 
-                    {
-                    	return "Cet email est déjà associé à un compte.";
-                    } 
-                
-                    else 
-                    {
-                        $mdp_raw = $_GET['mdp'] ?? '';
-
-                        if (!empty($mdp_raw)) 
-                        {
-                            $hash = password_hash($mdp_raw, PASSWORD_BCRYPT);
-
-                            $stmt = $bdd->pdo->prepare(
-                                "UPDATE Utilisateur SET pseudo=:pseudo,nom=:nom,prenom=:prenom,email=:email,droits=:droits,hash_mdp=:hash
-                                WHERE id_utilisateur=:id"
-                                );
-                            $stmt->execute([':pseudo'=>$pseudo,':nom'=>$nom,':prenom'=>$prenom,':email'=>$email,':droits'=>$droits,':hash'=>$hash,':id'=>$id]);
-                        } 
-                    
-                        else 
-                        {
-                            $stmt = $bdd->pdo->prepare(
-                                "UPDATE Utilisateur SET pseudo=:pseudo,nom=:nom,prenom=:prenom,email=:email,droits=:droits
-                                WHERE id_utilisateur=:id"
-                            );
-                            $stmt->execute([':pseudo'=>$pseudo,':nom'=>$nom,':prenom'=>$prenom,':email'=>$email,':droits'=>$droits,':id'=>$id]);
-                        }
-
-                        return "Utilisateur '$pseudo' modifié avec succès.";
-                	}
-            	}
-        	}
+        	return "Utilisateur '$pseudo' modifié avec succès.";
     	}
 
-		function suprimer_utilisateur(): string
+		function supprimer_utilisateur(): string
 		{
-        	$id = (int)($_GET['id_utilisateur'] ?? 0);
+        	$id = (int)($_POST['id_utilisateur'] ?? 0);
 
         	if (!$id) 
 			{
-            	$message_user = "Identifiant invalide.";
+            	return "Identifiant invalide.";
         	} 
-			
-			else 
-			{
-            	$stmt = $bdd->pdo->prepare("DELETE FROM Utilisateur WHERE id_utilisateur = :id");
-            	$stmt->execute([':id' => $id]);
-            	return "Utilisateur supprimé.";
-        	}
+
+			$this->bdd->requetes_sql("DELETE FROM Utilisateur WHERE id_utilisateur = :id", [':id' => $id]);
+        	return "Utilisateur supprimé.";
 		}
 	}
 ?>

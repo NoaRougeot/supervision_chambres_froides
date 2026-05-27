@@ -7,9 +7,9 @@
     $alertes = new Alertes();
 
 	//on attend un envois du formulaire et on prevois l'eventualiter ou les casses serais vide pour ne pas afficher le message a l'entrer de la page
-	if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['login'], $_GET['mdp']))
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'], $_POST['mdp']))
 	{
-		if (empty($_GET['login']) || empty($_GET['mdp'])) // Si au moins un des champs n'est pas remplis
+		if (empty($_POST['login']) || empty($_POST['mdp'])) // Si au moins un des champs n'est pas remplis
 		{
 			echo $alertes->alert_danger("Au moins un des champs est vide");
 		}
@@ -17,7 +17,7 @@
 		else
 		{
 			$connexion = new Utilisateur();
-			$connexion->connexion_utilisateur($_GET['login'], $_GET['mdp']);
+			$connexion->connexion_utilisateur($_POST['login'], $_POST['mdp']);
             echo $alertes->alert_danger($connexion->messages);
 		}
 	}
@@ -57,7 +57,7 @@
 
                 <div class="card-body">
 
-                    <form action="" method="GET">
+                    <form action="" method="POST">
 
                         <div class="mb-3">
                             <label class="form-label">Nom d'utilisateur</label>

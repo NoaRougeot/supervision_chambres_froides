@@ -14,52 +14,52 @@ $protection->status_protection("admin");
 $message_user    = '';
 $message_chambre = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET')
+if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
     // ── Ajouter utilisateur ──────────────────────────────────
-    if (isset($_GET['pseudo']))
+    if (isset($_POST['pseudo']) && !isset($_POST['action']))
     {
         $ajout_utilisateur = new Utilisateur();
         $message_user = $ajout_utilisateur->ajouter_utilisateur();
     }
 
     // ── Modifier utilisateur ─────────────────────────────────
-    if (isset($_GET['action']) && $_GET['action'] === 'modifier_utilisateur')
+    if (isset($_POST['action']) && $_POST['action'] === 'modifier_utilisateur')
     {
         $modification_utilisateur = new Utilisateur();
-        $message_utilisateur = $modification_utilisateur->modifier_utilisateur();
+        $message_user = $modification_utilisateur->modifier_utilisateur();
     }
 
     // ── Supprimer utilisateur ────────────────────────────────
-    if (isset($_GET['action']) && $_GET['action'] === 'supprimer_utilisateur')
+    if (isset($_POST['action']) && $_POST['action'] === 'supprimer_utilisateur')
     {
        $modification_utilisateur = new Utilisateur();
-       $message_utilisateur = $modification_utilisateur->modifier_utilisateur();
+       $message_user = $modification_utilisateur->supprimer_utilisateur();
     }
 
     // ── Ajouter chambre ──────────────────────────────────────
-    if (isset($_GET['nom_chambre']) && !isset($_GET['action']))
+    if (isset($_POST['nom_chambre']) && !isset($_POST['action']))
     {
         $ajout_chambre = new Chambre_froides();
         $message_chambre = $ajout_chambre->ajouter_chambre();
     }
 
     // ── Modifier chambre ─────────────────────────────────────
-    if (isset($_GET['action']) && $_GET['action'] === 'modifier_chambre')
+    if (isset($_POST['action']) && $_POST['action'] === 'modifier_chambre')
     {
         $modification_chambre = new Chambre_froides();
         $message_chambre = $modification_chambre->modifier_chambre();
     }
 
     // ── Supprimer chambre ────────────────────────────────────
-    if (isset($_GET['action']) && $_GET['action'] === 'supprimer_chambre')
+    if (isset($_POST['action']) && $_POST['action'] === 'supprimer_chambre')
     {
         $supression_chambre = new Chambre_froides();
         $message_chambre = $supression_chambre->supprimer_chambre();
     }
 }
 
-// ── Chargement des listes ────────────────────────────────────
+// ── Chargement des listes utilisqteurs et chambres froides  ────────────────────────────────────
 $obj_chambres   = new Chambre_froides();
 $liste_chambres = $obj_chambres->info_chambres();
 
@@ -354,7 +354,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form method="GET">
+        <form method="POST">
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Pseudo <span class="text-danger">*</span></label>
@@ -409,7 +409,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form method="GET">
+        <form method="POST">
           <input type="hidden" name="action" value="modifier_utilisateur">
           <input type="hidden" name="id_utilisateur" id="edit-user-id">
           <div class="row g-3">
@@ -473,7 +473,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
       <div class="modal-body">
         <p>Voulez-vous vraiment supprimer <strong id="del-user-pseudo"></strong> ?</p>
         <p class="text-danger small"><i class="fas fa-exclamation-triangle me-1"></i>Cette action est irréversible.</p>
-        <form method="GET">
+        <form method="POST">
           <input type="hidden" name="action" value="supprimer_utilisateur">
           <input type="hidden" name="id_utilisateur" id="del-user-id">
           <div class="d-grid">
@@ -501,7 +501,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form method="GET">
+        <form method="POST">
           <div class="row g-3">
             <div class="col-12">
               <label class="form-label">Nom de la chambre <span class="text-danger">*</span></label>
@@ -543,7 +543,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form method="GET">
+        <form method="POST">
           <input type="hidden" name="action" value="modifier_chambre">
           <input type="hidden" name="id_chambre" id="edit-chambre-id">
           <div class="row g-3">
@@ -589,7 +589,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
       <div class="modal-body">
         <p>Voulez-vous vraiment supprimer <strong id="del-chambre-nom"></strong> ?</p>
         <p class="text-danger small"><i class="fas fa-exclamation-triangle me-1"></i>Toutes les données associées seront perdues.</p>
-        <form method="GET">
+        <form method="POST">
           <input type="hidden" name="action" value="supprimer_chambre">
           <input type="hidden" name="id_chambre" id="del-chambre-id">
           <div class="d-grid">
