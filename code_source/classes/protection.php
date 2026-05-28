@@ -30,7 +30,7 @@
         {
             if (!$_SESSION["logged"])
             {
-                this->redirection_avertissement($lien_anexes);
+                $this->redirection_avertissement($lien_anexes);
             }
         }
 
@@ -42,7 +42,7 @@
         {
             if (empty($_SESSION['cle_secrete']))
             {
-                this->redirection_avertissement($lien_anexes);
+                $this->redirection_avertissement($lien_anexes);
             }
         }
 
@@ -55,7 +55,7 @@
         {
             if (!empty($_SESSION['cle_secrete']) && $_SESSION['2fa_validated'] === true)
             {
-                this->redirection_avertissement($lien_anexes);
+                $this->redirection_avertissement($lien_anexes);
             }
         }
 
@@ -68,7 +68,7 @@
         {
             if (!empty($_SESSION['cle_secrete']) && $_SESSION["logged"] && $_SESSION['2fa_validated'] !== True)
             {
-                this->redirection_avertissement($lien_anexes);
+                $this->redirection_avertissement($lien_anexes);
             }
         }
 
@@ -82,7 +82,7 @@
         {
             if ($_SESSION["logged"] && $_SESSION["droits"] !== $user_status)
             {
-                this->redirection_avertissement($lien_anexes);
+                $this->redirection_avertissement($lien_anexes);
             }
         }
     }
