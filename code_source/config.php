@@ -1,6 +1,8 @@
 <?php
     //on définit une fois pour toutes les chemins d'accès utiles aux différents fichiers propres au projet global
 
+	if (defined('RACINE_PROJET')) return;
+
 	define('RACINE_PROJET', realpath(__DIR__)); //niveaux le plus haut (racine)
 
 	define('INDEX_PROJET', RACINE_PROJET . '/index.php');
@@ -15,11 +17,15 @@
 	define('ALERTES_CLASS_PROJET', CLASSES_PROJET . '/alertes.php');
 
 	define('LOGS_PROJET', RACINE_PROJET . '/logs');
-	define('BDD_LOGS_PROJET', LOGS_PROJET . '/bdd_connexions.log');
-	define('URL_EXPLOIT_LOGS_PROJET', LOGS_PROJET . '/acces_interdits.log');
+	define('BDD_LOGS_PROJET', LOGS_PROJET . '/bdd_erreur.log');
+	define('BRUTEFORCE_LOGS_PROJET', LOGS_PROJET . '/securite_bruteforce.log');
+	define('ACCES_LOGS_PROJET', LOGS_PROJET . '/securite_acces.log');
 
 	define('INTERDICTION_PROJET', RACINE_PROJET . '/interdiction');
 	define('URL_EXPLOIT_PROJET', INTERDICTION_PROJET . '/acces_interdit.php');
+
+	define('HEADER_GLOBAL', RACINE_PROJET . '/header');
+	define('NAVBAR', HEADER_GLOBAL . '/navbar.php');
 
 	define('GRAPH_PROJET', RACINE_PROJET . '/temperatures');
 	define('TEMPS_PORTES_PROJET', GRAPH_PROJET . '/graph.php');

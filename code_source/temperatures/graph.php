@@ -7,6 +7,9 @@
     $protection = new Protection();
     $protection->url_protection();
     $protection->tfa_url_protection();
+
+    $titre_nav = 'Supervision';
+    require_once NAVBAR;
     
     $chambres = new Chambre_froides();
 
@@ -66,9 +69,9 @@
     {
         switch ($periode) 
         {
-            case 'semaine': $start = $now - (7 * 86400);  $format_label = 'd/m H:i'; break;
-            case 'mois':    $start = $now - (30 * 86400); $format_label = 'd/m';     break;
-            case 'annee':   $start = $now - (365 * 86400);$format_label = 'm/Y';     break;
+            case 'semaine': $start = $now - (7 * 86400);   $format_label = 'd/m H:i'; break;
+            case 'mois':    $start = $now - (30 * 86400);  $format_label = 'd/m H:i'; break;
+            case 'annee':   $start = $now - (365 * 86400); $format_label = 'd/m/Y H:i';   break;
         }
     }
 
@@ -88,7 +91,7 @@
 
         if ($duree <= 2 * 86400)      $format_label = 'd/m H:i';
         elseif ($duree <= 15 * 86400) $format_label = 'd/m/Y H:i';
-        else                          $format_label = 'd/m/Y';
+        else                          $format_label = 'd/m/Y H:i';
     }
 
     // ====================== PAGINATION ======================
@@ -104,12 +107,12 @@
     $rows_portes  = [];
     $rows_alertes = [];
 
+    $erreur_connexion = '';
     try 
     {
         $rows         = $chambres->info_temps($id_chambre, $start, $end);
         $rows_portes  = $chambres->info_portes($id_chambre, $start, $end);
         $rows_alertes = $chambres->info_alertes($id_chambre, $start, $end);
-        $erreur_connexion = '';
     } 
     catch (Exception $e) 
     {
@@ -195,22 +198,10 @@
         }
     </style>
 </head>
-<body class="bg-light">
+<body class="bg-light" id="top">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Supervision</a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text text-light me-3">
-                    <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom'] ?? 'Utilisateur') ?>
-                </span>
-                <a href="../authentification/deconnexion.php" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
-                </a>
-            </div>
-        </div>
-    </nav>
+    <!-- require NAVBAR injecté depuis le PHP -->
 
     <div class="container mt-4">
 
@@ -621,7 +612,8 @@
                         borderColor: 'blue',
                         borderDash: [5, 5],
                         pointRadius: 0,
-                        borderWidth: 2
+                        borderWidth: 2,
+                        tooltip: { enabled: false }
                     },
                     {
                         label: 'Seuil maximum',
@@ -629,7 +621,8 @@
                         borderColor: 'green',
                         borderDash: [5, 5],
                         pointRadius: 0,
-                        borderWidth: 2
+                        borderWidth: 2,
+                        tooltip: { enabled: false }
                     }
                 ]
             },

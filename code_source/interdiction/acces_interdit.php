@@ -3,17 +3,16 @@
 require_once __DIR__ . '/../config.php';
 session_start();
 
-// ==================== CAPTURE ET LOG DE L'INTRUSION ====================
+// captures des info pour les logs d'intrusions
 $ip_visiteur     = $_SERVER['REMOTE_ADDR'] ?? 'IP inconnue';
 $heure           = date('d/m/Y à H:i:s');
-$user_agent      = $_SERVER['HTTP_USER_AGENT'] ?? 'Inconnu';
+$user_agent      = str_replace(["\n", "\r"], ' ', $_SERVER['HTTP_USER_AGENT'] ?? 'Inconnu');
 $page_tentee     = $_SERVER['HTTP_REFERER'] ?? 'Page inconnue';
 
 $log_message = "[$heure] TENTATIVE D'INTRUSION - IP: $ip_visiteur | User-Agent: $user_agent | Page tentée: $page_tentee\n";
 
-// Enregistrement dans le log (format identique à tes logs BDD)
-file_put_contents(URL_EXPLOIT_LOGS_PROJET, $log_message, FILE_APPEND | LOCK_EX);
-// =====================================================================
+// Enregistrement dans le log
+error_log($log_message, 3, ACCES_LOGS_PROJET);
 ?>
 
 <!DOCTYPE html>
@@ -58,8 +57,7 @@ file_put_contents(URL_EXPLOIT_LOGS_PROJET, $log_message, FILE_APPEND | LOCK_EX);
                     <div class="border border-danger p-4 mb-4 text-start bg-white">
                         <strong>Information importante :</strong><br><br>
                         • Cette tentative est enregistrée dans les logs de sécurité.<br>
-                        • Toute nouvelle tentative sans authentification sera tracée.<br>
-                        • Nous conservons les preuves en cas de besoin.
+                        • Toutes tentatives est tracée dans les journaux de sécurité.
                     </div>
 
                     <a href="../index.php" class="btn btn-danger btn-lg px-5 py-3 shadow-sm">

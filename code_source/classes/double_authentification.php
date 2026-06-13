@@ -5,10 +5,6 @@ require_once BDD_CLASS_PROJET;
 require_once TFA_PROJET;
 require_once UTILISATEUR_CLASS_PROJET;
 
-session_start();
-$protection = new Protection();
-$protection->url_protection();
-
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
 

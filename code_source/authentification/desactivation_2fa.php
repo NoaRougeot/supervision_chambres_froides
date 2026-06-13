@@ -1,4 +1,5 @@
 <?php
+    session_start();
     require_once __DIR__ . '/../config.php';
     require_once PROTECTION_CLASS_PROJET;
     require_once AUTH_CLASS_PROJET;

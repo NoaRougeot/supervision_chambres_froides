@@ -11,6 +11,10 @@ $protection->url_protection();
 $protection->tfa_url_protection();
 $protection->status_protection("admin");
 
+$titre_nav = 'Administration';
+$icone_nav = 'fas fa-cog';
+require_once NAVBAR;
+
 $message_user    = '';
 $message_chambre = '';
 
@@ -148,22 +152,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
 
 <body class="bg-light">
 
-<!-- ════ NAVBAR ════ -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
-            <i class="fas fa-cog me-2"></i>Administration
-        </a>
-        <div class="navbar-nav ms-auto">
-            <span class="navbar-text text-light me-3">
-                <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom'] ?? 'Utilisateur') ?>
-            </span>
-            <a href="../authentification/deconnexion.php" class="btn btn-outline-danger btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
-            </a>
-        </div>
-    </div>
-</nav>
+<!-- NAVBAR injectée via require NAVBAR -->
 
 <!-- ════ TITRE ════ -->
 <div class="container">

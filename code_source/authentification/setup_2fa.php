@@ -1,4 +1,5 @@
 <?php
+    session_start();
     require_once __DIR__ . '/../config.php';
     require_once PROTECTION_CLASS_PROJET;
     require_once BDD_CLASS_PROJET;
@@ -8,6 +9,9 @@
     $protection->url_protection();  // redirige si non connecté
     $protection->tfa_url_protection();
     $protection->already_tfa();
+
+    $titre_nav = 'Mise en place 2FA';
+    require_once NAVBAR;
 
     $double_authentification = new DoubleAuthentification();
 
@@ -54,22 +58,6 @@
 </head>
 
 <body class="bg-light">
-
-    <!-- Navbar identique à espace_personnel -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Mise en place 2FA</a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text text-light me-3">
-                    <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom'] ?? 'Utilisateur') ?>
-                </span>
-                <a href="../authentification/deconnexion.php" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
-                </a>
-            </div>
-        </div>
-    </nav>
-
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">

@@ -1,5 +1,5 @@
 <?php
-
+    session_start();
 	require_once 'config.php';
     require_once UTILISATEUR_CLASS_PROJET;
     require_once ALERTES_CLASS_PROJET;
@@ -43,7 +43,7 @@
         <div class="text-center mt-5 mb-4">
             <h1 class="fw-bold">Système de supervision</h1>
             <h3 class="text-muted fw-bold">Chambres froides</h3>
-            <!-- <img src="./images/mendez_logo.png" alt="Logo" class="image-logo"> -->
+            <img src="./images/mendez_logo.png" alt="Logo" class="image-logo">
         </div>
 
         <!-- Formulaire -->

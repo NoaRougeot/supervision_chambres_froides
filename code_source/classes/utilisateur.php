@@ -1,5 +1,4 @@
 <?php
-
 	require_once __DIR__ . '/../config.php';
     require_once BDD_CLASS_PROJET;
 
@@ -9,14 +8,76 @@
 		private $bdd_requete = "SELECT * FROM Utilisateur WHERE pseudo = :login";
 		public $messages = '';
 
+        // Anti brute-force : constantes de seuil
+        private const MAX_TENTATIVES  = 5;    // nb d'échecs avant blocage
+        private const DELAI_BLOCAGE   = 300;  // secondes de blocage (5 min)
+
         public function __construct()
         {
             $this->bdd = new Base_de_donnee();
             $this->bdd->connexion();
         }
 
+        // Anti brute-force (stockage en session, pas de BDD)
+
+        /**
+         * Retourne le nombre de secondes restantes de blocage (0 si pas bloqué).
+         */
+        private function secondes_restantes(): int
+        {
+            if (empty($_SESSION['bf_bloque_jusqu_a'])) 
+			{
+                return 0;
+            }
+
+            $reste = (int)$_SESSION['bf_bloque_jusqu_a'] - time();
+            return max(0, $reste);
+        }
+
+        /**
+         * Incrémente le compteur d'échecs et pose un blocage si le seuil est atteint.
+         */
+        private function enregistrer_echec(): void
+        {
+            $_SESSION['bf_tentatives']  = ($_SESSION['bf_tentatives']  ?? 0) + 1;
+            $_SESSION['bf_derniere_ip'] = $_SERVER['REMOTE_ADDR'] ?? 'inconnue';
+
+            if ($_SESSION['bf_tentatives'] >= self::MAX_TENTATIVES) 
+			{
+                $_SESSION['bf_bloque_jusqu_a'] = time() + self::DELAI_BLOCAGE;
+
+                // Log optionnel dans le fichier existant
+                error_log(
+                    "[BRUTE-FORCE] " . date('Y-m-d H:i:s') . " – IP: " .
+                    ($_SERVER['REMOTE_ADDR'] ?? '?') . " – Login: bloqué après " .
+                    self::MAX_TENTATIVES . " tentatives\n",
+                    3,
+                    BRUTEFORCE_LOGS_PROJET 
+                );
+            }
+        }
+
+        /**
+         * Réinitialise les compteurs après une connexion réussie.
+         */
+        private function reinitialiser_compteur(): void
+        {
+            unset($_SESSION['bf_tentatives'], $_SESSION['bf_bloque_jusqu_a'], $_SESSION['bf_derniere_ip']);
+        }
+
+        // Connexion principale
         function connexion_utilisateur(string $login, string $mdp)
         {
+            // 1. Vérification du blocage actif
+            $reste = $this->secondes_restantes();
+
+            if ($reste > 0) 
+			{
+                $minutes = ceil($reste / 60);
+                $this->messages = "Trop de tentatives échouées. Compte temporairement bloqué. Réessayez dans {$minutes} minute(s).";
+                return $this->messages;
+            }
+
 			if ($this->bdd->est_connecter !== True)
 			{
 				$this->messages = "Connexion impossible a la base de donnée";
@@ -29,6 +90,7 @@
 
 			    if (!$result)
 			    {
+                    $this->enregistrer_echec();
 					$this->messages = "Identifiant ou mot de passe incorrect";
 				    return "Identifiant ou mot de passe incorrect";
 			    }
@@ -37,13 +99,15 @@
 			    {
 				    if (!password_verify($mdp, $result['hash_mdp']))
 				    {
+                        $this->enregistrer_echec();
 					    $this->messages = "Identifiant ou mot de passe incorrect";
 				    	return "Identifiant ou mot de passe incorrect";
 				    }
 
 				    else
 				    {
-					    session_start();
+                        // Connexion réussie reset compteur
+                        $this->reinitialiser_compteur();
 
 						$_SESSION["logged"] = True;
 						$_SESSION["2fa_validated"] = False;
@@ -57,7 +121,7 @@
 
 					    if (empty($_SESSION["cle_secrete"]))
 					    {
-							header('Location: espaces_perso/espace_personnel.php');
+						    header('Location: espaces_perso/espace_personnel.php');
                             exit;
 					    }
 
