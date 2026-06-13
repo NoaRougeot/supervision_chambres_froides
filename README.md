@@ -1,4 +1,4 @@
-# 🌡️ Système de Supervision de Chambres Froides
+# Système de Supervision de Chambres Froides
 
 <div align="center">
 
