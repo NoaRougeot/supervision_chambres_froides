@@ -13,10 +13,10 @@ MENU = """
   ├─────────────────────────────────────────────────┤
   │  [1]  Info chambres                             │ 
   │  [2]  Insérer températures                      │                    
-  │  [3]  Insérer un états de porte                 │
+  │  [3]  Insérer un état de porte                  │
   │  [4]  Insérer une alerte                        │
   │  [5]  Tout suprimer                             │
-  │  [5]  Quitter                                   │
+  │  [6]  Quitter                                   │
   └─────────────────────────────────────────────────┘
 """
 
