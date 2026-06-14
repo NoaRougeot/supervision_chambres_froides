@@ -132,7 +132,7 @@ cd code_source_simulateur
 python3 simulateur.py
 ```
 
-> Pensez à configurer vos paramètres de connexion BDD avant de lancer le simulateur.
+> Pensez à configurer vos paramètres de connexion BDD et a decompresser le fichier mysql avant de lancer le simulateur.
 
 ---
 
