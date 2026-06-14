@@ -20,42 +20,42 @@ $message_chambre = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    // ── Ajouter utilisateur ──────────────────────────────────
+    // Ajouter utilisateur 
     if (isset($_POST['pseudo']) && !isset($_POST['action']))
     {
         $ajout_utilisateur = new Utilisateur();
         $message_user = $ajout_utilisateur->ajouter_utilisateur();
     }
 
-    // ── Modifier utilisateur ─────────────────────────────────
+    // Modifier utilisateur 
     if (isset($_POST['action']) && $_POST['action'] === 'modifier_utilisateur')
     {
         $modification_utilisateur = new Utilisateur();
         $message_user = $modification_utilisateur->modifier_utilisateur();
     }
 
-    // ── Supprimer utilisateur ────────────────────────────────
+    // Supprimer utilisateur
     if (isset($_POST['action']) && $_POST['action'] === 'supprimer_utilisateur')
     {
        $modification_utilisateur = new Utilisateur();
        $message_user = $modification_utilisateur->supprimer_utilisateur();
     }
 
-    // ── Ajouter chambre ──────────────────────────────────────
+    // Ajouter chambre
     if (isset($_POST['nom_chambre']) && !isset($_POST['action']))
     {
         $ajout_chambre = new Chambre_froides();
         $message_chambre = $ajout_chambre->ajouter_chambre();
     }
 
-    // ── Modifier chambre ─────────────────────────────────────
+    // Modifier chambre
     if (isset($_POST['action']) && $_POST['action'] === 'modifier_chambre')
     {
         $modification_chambre = new Chambre_froides();
         $message_chambre = $modification_chambre->modifier_chambre();
     }
 
-    // ── Supprimer chambre ────────────────────────────────────
+    // Supprimer chambre
     if (isset($_POST['action']) && $_POST['action'] === 'supprimer_chambre')
     {
         $supression_chambre = new Chambre_froides();
@@ -63,14 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
 }
 
-// ── Chargement des listes utilisqteurs et chambres froides  ────────────────────────────────────
+// Chargement des listes utilisqteurs et chambres froides
 $obj_chambres   = new Chambre_froides();
 $liste_chambres = $obj_chambres->info_chambres();
 
 $bdd_list = new Base_de_donnee();
 $bdd_list->connexion();
 $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, email, droits FROM Utilisateur ORDER BY nom ASC");
-
 
 ?>
 <!DOCTYPE html>
@@ -83,7 +82,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* ── Layout menu-tableau ── */
+        /* Layout menu-tableau */
         .menu-cell {
             width: 215px;
             vertical-align: top;
@@ -103,7 +102,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
             overflow: hidden;
         }
 
-        /* ── Bulle d'aide  ── */
+        /* Bulle d'aide  */
         .help-bubble {
             position: relative;
             display: inline-flex;
@@ -154,14 +153,14 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
 
 <!-- NAVBAR injectée via require NAVBAR -->
 
-<!-- ════ TITRE ════ -->
+<!-- TITRE -->
 <div class="container">
     <div class="text-center mt-5 mb-4">
         <h1 class="fw-bold">Système de supervision</h1>
         <h3 class="text-muted fw-bold">Administration — Gestion des données</h3>
     </div>
 
-    <!-- ════ TABLEAU PRINCIPAL ════ -->
+    <!-- TABLEAU PRINCIPAL -->
     <div class="table-wrapper mb-5">
         <table class="table table-bordered align-middle bg-white mb-0">
             <tbody><tr>
@@ -186,7 +185,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
                 <td class="p-0">
                 <div class="tab-content">
 
-                    <!-- ══ ONGLET UTILISATEURS ══ -->
+                    <!-- ONGLET UTILISATEURS -->
                     <div class="tab-pane fade show active" id="tabUtilisateurs">
 
                         <?php if ($message_user): ?>
@@ -330,9 +329,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
 <p class="text-center text-secondary mb-4">Lycée Pierre Mendès France — Épinal</p>
 
 
-<!-- ══════════════════════════════════════════════════════
-     MODALS UTILISATEURS
-══════════════════════════════════════════════════════ -->
+<!-- MODALS UTILISATEURS -->
 
 <!-- AJOUTER utilisateur -->
 <div class="modal fade" id="modalAddUser" tabindex="-1" aria-hidden="true">
@@ -477,9 +474,7 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
 </div>
 
 
-<!-- ══════════════════════════════════════════════════════
-     MODALS CHAMBRES FROIDES
-══════════════════════════════════════════════════════ -->
+<!-- MODALS CHAMBRES FROIDES -->
 
 <!-- AJOUTER chambre -->
 <div class="modal fade" id="modalAddChambre" tabindex="-1" aria-hidden="true">
@@ -593,11 +588,11 @@ $liste_users = $bdd_list->fetchAll("SELECT id_utilisateur, pseudo, nom, prenom, 
 </div>
 
 
-<!-- ════ SCRIPTS ════ -->
+<!--SCRIPTS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 
-// ── Afficher/masquer mot de passe ──────────────────────────────
+// Afficher/masquer mot de passe 
 document.querySelectorAll('.btn-toggle-mdp').forEach(btn => {
     btn.addEventListener('click', function () {
         const input = document.getElementById(this.dataset.target);
@@ -607,7 +602,7 @@ document.querySelectorAll('.btn-toggle-mdp').forEach(btn => {
     });
 });
 
-// ── Auto-remplissage modal modifier utilisateur ────────────────
+// Auto-remplissage modal modifier utilisateur
 document.getElementById('modalEditUser').addEventListener('show.bs.modal', function (e) {
     const b = e.relatedTarget;
     document.getElementById('edit-user-id').value     = b.dataset.id;
@@ -619,14 +614,14 @@ document.getElementById('modalEditUser').addEventListener('show.bs.modal', funct
     document.getElementById('mdpEdit').value          = '';
 });
 
-// ── Auto-remplissage modal supprimer utilisateur ───────────────
+// Auto-remplissage modal supprimer utilisateur
 document.getElementById('modalDelUser').addEventListener('show.bs.modal', function (e) {
     const b = e.relatedTarget;
     document.getElementById('del-user-id').value              = b.dataset.id;
     document.getElementById('del-user-pseudo').textContent    = b.dataset.pseudo;
 });
 
-// ── Auto-remplissage modal modifier chambre ────────────────────
+// Auto-remplissage modal modifier chambre
 document.getElementById('modalEditChambre').addEventListener('show.bs.modal', function (e) {
     const b = e.relatedTarget;
     document.getElementById('edit-chambre-id').value   = b.dataset.id;
@@ -636,7 +631,7 @@ document.getElementById('modalEditChambre').addEventListener('show.bs.modal', fu
     document.getElementById('edit-chambre-max').value  = b.dataset.max;
 });
 
-// ── Auto-remplissage modal supprimer chambre ───────────────────
+// Auto-remplissage modal supprimer chambre
 document.getElementById('modalDelChambre').addEventListener('show.bs.modal', function (e) {
     const b = e.relatedTarget;
     document.getElementById('del-chambre-id').value           = b.dataset.id;
