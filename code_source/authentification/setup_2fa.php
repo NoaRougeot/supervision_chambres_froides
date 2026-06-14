@@ -129,11 +129,11 @@
                                 </button>
                             </form>
 
-                            <div class="text-center mt-4">
-                                <a href="?regen=1" class="text-muted small">
-                                    <i class="fas fa-sync-alt me-1"></i> Générer un nouveau QR code
-                                </a>
-                            </div>
+                            <form method="POST" class="text-center mt-4">
+                                <button type="submit" name="regen" value="1" class="btn btn-link text-muted small">
+                                <i class="fas fa-sync-alt me-1"></i> Générer un nouveau QR code
+                                </button>
+                            </form>
                         <?php endif; ?>
                     </div>
 
