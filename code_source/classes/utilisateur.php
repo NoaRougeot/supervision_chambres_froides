@@ -46,7 +46,7 @@
 			{
                 $_SESSION['bf_bloque_jusqu_a'] = time() + self::DELAI_BLOCAGE;
 
-                // Log optionnel dans le fichier existant
+                // Log
                 error_log(
                     "[BRUTE-FORCE] " . date('Y-m-d H:i:s') . " – IP: " .
                     ($_SERVER['REMOTE_ADDR'] ?? '?') . " – Login: bloqué après " .
@@ -111,6 +111,8 @@
 
 						$_SESSION["logged"] = True;
 						$_SESSION["2fa_validated"] = False;
+
+						$_SESSION["id_utilisateur"] = $result["id_utilisateur"]; // pour la modif de son propre utilisateur dans la méthode modifier_utilisateur()
 					    $_SESSION["pseudo"] = $result["pseudo"];
 					    $_SESSION["prenom"] = $result["prenom"];
 					    $_SESSION["nom"] = $result["nom"];
@@ -221,7 +223,7 @@
         	$email  = trim($_POST['email']  ?? '');
         	$droits = $_POST['droits'] ?? '';
 
-        	if (!$id || !$pseudo || !$nom || !$prenom || !$email) 
+        	if ($id <= 0 || !$pseudo || !$nom || !$prenom || !$email) 
         	{
            		return "Tous les champs obligatoires doivent être remplis.";
         	} 
@@ -249,6 +251,21 @@
             {
                 $this->bdd->requetes_sql("UPDATE Utilisateur SET pseudo=:pseudo, nom=:nom, prenom=:prenom, email=:email, droits=:droits WHERE id_utilisateur=:id", [':pseudo'=>$pseudo, ':nom'=>$nom, ':prenom'=>$prenom, ':email'=>$email, ':droits'=>$droits, ':id'=>$id]);
             }
+
+			if (isset($_SESSION['id_utilisateur']) && (int)$_SESSION['id_utilisateur'] === $id) 
+			{
+    			$_SESSION['pseudo']  = $pseudo;
+    			$_SESSION['nom']     = $nom;
+    			$_SESSION['prenom']  = $prenom;
+    			$_SESSION['email']   = $email;
+    			$_SESSION['droits']  = $droits;
+
+				// Si le mdp a été changé et que c'est l'utilisateur connecté, on le déconnecte
+    			if (!empty($mdp_raw)) 
+				{
+        			$this->deconnexion_utilisateur();
+    			}
+			}
 
         	return "Utilisateur '$pseudo' modifié avec succès.";
     	}
