@@ -2,6 +2,13 @@
 
 <div align="center">
 
+## 🌐 Démo en ligne
+
+**[https://rougeot.alwaysdata.net/bts_projet_chambre_froides](https://rougeot.alwaysdata.net/bts_projet_chambre_froides/index.php)**  
+Accès jury identifiants fournis séparément.
+
+---
+
 ![BTS CIEL](https://img.shields.io/badge/BTS%20CIEL-Session%202026-blue?style=for-the-badge)
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white)
