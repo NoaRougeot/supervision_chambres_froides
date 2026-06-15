@@ -4,8 +4,11 @@
 
 ## 🌐 Démo en ligne
 
-**[https://rougeot.alwaysdata.net/bts_projet_chambre_froides](https://rougeot.alwaysdata.net/bts_projet_chambre_froides/index.php)**  
-Accès jury identifiants fournis séparément.
+<a href="https://rougeot.alwaysdata.net/bts_projet_chambre_froides/index.php" target="_blank">
+  <strong>Ouvrir le site de démonstration</strong>
+</a>
+
+*Accès jury — identifiants fournis séparément.*
 
 ---
 
